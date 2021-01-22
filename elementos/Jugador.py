@@ -6,6 +6,9 @@ class Jugador(object):
         """ Constructor de la raqueta del jugador """
 
         self.__ventana = ventana
+
+        self.__altoVentana = self.__ventana.get_height()
+
         self.__posInicio = posInicio
         self.__posFinal = [posInicio[0], posInicio[1] + 200]
 
@@ -35,6 +38,12 @@ class Jugador(object):
         
         # La velocidad será 0, a menos que una tecla esté oprimida
 
+        # Verificamos que la raqueta no se salga del mapa
+        if self.__posInicio[1] <= 5 and self.__velocidad < 0:
+            return
+        elif self.__posFinal[1] >= self.__altoVentana - 5 and self.__velocidad > 0:
+            return
+
         # Movemos el objeto
         self.__posInicio[1] += self.__velocidad
         self.__posFinal[1] += self.__velocidad
@@ -44,5 +53,5 @@ class Jugador(object):
         """" Imprime la raqueta del jugador"""
         # En caso de que exista movimiento, lo movemos
         self.mover()
-        print(self.__velocidad)
+
         pygame.draw.line(self.__ventana, self.__color, self.__posInicio, self.__posFinal, self.__ancho)

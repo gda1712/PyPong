@@ -17,11 +17,14 @@ class Multijugador(object):
 
         self.__ventana = pygame.display.set_mode(tamano)
 
-        self.__jugador1 = Jugador(self.__ventana, [50, 100], 10, pygame.K_w, pygame.K_s, self.__colorBlanco)
+        jugador1 = Jugador(self.__ventana, [50, 100], 10, pygame.K_w, pygame.K_s, self.__colorBlanco)
+        jugador2 = Jugador(self.__ventana, [750, 100], 10, pygame.K_i, pygame.K_k, self.__colorBlanco)
+        
+        self.__listaJugadores = [jugador1, jugador2]
 
         self.__reloj = pygame.time.Clock()
         self.__mainLoop()
-
+        
 
     def __mainLoop(self):
         """" Método que se encarga de recargar en cada momento la pantalla del juego """
@@ -33,8 +36,9 @@ class Multijugador(object):
             
             self.__ventana.fill(self.__colorNegro)
 
-            # Pintamos elementos
-            self.__jugador1.imprimir()
+            # Pintamos elementos y jugadores
+            for jugador in self.__listaJugadores:
+                jugador.imprimir()
 
             #Actualizamos ventana 
             pygame.display.flip()
@@ -44,24 +48,24 @@ class Multijugador(object):
 
     def __controladorDeEventos(self):
         """ Se encarga de administrar todos los eventos del juego """
-
         
         for evento in pygame.event.get():
             #Si la ventana se cierra, terminamos el programa
             if(evento.type == pygame.QUIT):
                 exit()
             
-            #----EVENTOS DEL JUGADOR 1------------
-            if evento.type == pygame.KEYUP:
-                if evento.key == self.__jugador1.getTeclaArriba() or evento.key == self.__jugador1.getTeclaAbajo():
-                    self.__jugador1.setVelocidad(0)
-        
-            if evento.type == pygame.KEYDOWN:
-                if evento.key == self.__jugador1.getTeclaArriba():
-                    self.__jugador1.setVelocidad(-5)
+            for jugador in self.__listaJugadores:
+                #----EVENTOS DEL JUGADOR------------
+                if evento.type == pygame.KEYUP:
+                    if evento.key == jugador.getTeclaArriba() or evento.key == jugador.getTeclaAbajo():
+                        jugador.setVelocidad(0)
             
-                if evento.key == self.__jugador1.getTeclaAbajo():
-                    self.__jugador1.setVelocidad(5)
+                if evento.type == pygame.KEYDOWN:
+                    if evento.key == jugador.getTeclaArriba():
+                        jugador.setVelocidad(-5)
+                
+                    if evento.key == jugador.getTeclaAbajo():
+                        jugador.setVelocidad(5)
 
             #-----EVENTOS DEL JUGADOR 2------------
 
