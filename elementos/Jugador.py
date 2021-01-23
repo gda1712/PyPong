@@ -1,26 +1,24 @@
 import pygame
+from elementos.Objeto import Objeto
+from pygame import Vector2
 
-class Jugador(object):
+class Jugador(Objeto):
+    """ Objeto que representa a un jugador del videojuego PONG"""
 
-    def __init__(self, ventana, posInicio, ancho, teclaArriba, teclaAbajo, color):
+    def __init__(self, ventana:pygame.surface, posicion:Vector2, velocidad:Vector2, ancho:int, teclaArriba:int, teclaAbajo:int, color:tuple):
         """ Constructor de la raqueta del jugador """
 
-        self.__ventana = ventana
-
-        self.__altoVentana = self.__ventana.get_height()
-
-        self.__posInicio = posInicio
-        self.__posFinal = [posInicio[0], posInicio[1] + 200]
+        Objeto.__init__(self, ventana, posicion, velocidad, color)
+        
+        self.__posFinal =  Vector2([self.getPosicion()[0], self.getPosicion()[1] + 200])
 
         self.__ancho = ancho
 
         # Asignamos la velocidad - Sube, + Baja
-        self.__velocidad = 0
 
         self.__teclaAbajo = teclaAbajo
         self.__teclaArriba = teclaArriba
 
-        self.__color = color
 
 
     #-----------------------------MÉTODOS GET-----------------------
@@ -29,9 +27,6 @@ class Jugador(object):
     def getTeclaArriba(self):
         return self.__teclaArriba
 
-    #------------------------------MÉTODOS SET-----------------------
-    def setVelocidad(self, velocidad):
-        self.__velocidad = velocidad
 
     def mover(self):
         """ Se encarga de detectar si una tecla fue presionada, y mueve el jugador """
@@ -39,19 +34,21 @@ class Jugador(object):
         # La velocidad será 0, a menos que una tecla esté oprimida
 
         # Verificamos que la raqueta no se salga del mapa
-        if self.__posInicio[1] <= 5 and self.__velocidad < 0:
+        if self.getPosicion().y <= 5 and self.getVelocidad().y < 0:
             return
-        elif self.__posFinal[1] >= self.__altoVentana - 5 and self.__velocidad > 0:
+        elif self.__posFinal.y >= self.getVentana().get_height() - 5 and self.getVelocidad().y > 0:
             return
 
+        self.getPosicion().y = self.getPosicion().y + self.getVelocidad().y
+
         # Movemos el objeto
-        self.__posInicio[1] += self.__velocidad
-        self.__posFinal[1] += self.__velocidad
+        self.__posFinal.y += self.getVelocidad().y
 
 
     def imprimir(self):
         """" Imprime la raqueta del jugador"""
         # En caso de que exista movimiento, lo movemos
+        
         self.mover()
 
-        pygame.draw.line(self.__ventana, self.__color, self.__posInicio, self.__posFinal, self.__ancho)
+        pygame.draw.line(self.getVentana(), self.getColor(), self.getPosicion(), self.__posFinal, self.__ancho)
